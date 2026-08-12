@@ -1,0 +1,15 @@
+version: 2
+
+seeds:
+  - name: raw_patients
+    description: Synthetic patient master data for the CareFlow project.
+  - name: raw_facilities
+    description: Synthetic hospital and clinic master data.
+  - name: raw_clinicians
+    description: Synthetic clinician roster data.
+  - name: raw_appointments
+    description: Synthetic booked appointment events.
+  - name: raw_encounters
+    description: Synthetic completed patient encounter events.
+  - name: raw_admissions
+    description: Synthetic inpatient admission and discharge events.
