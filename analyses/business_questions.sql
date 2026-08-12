@@ -20,7 +20,7 @@ order by average_wait_time_minutes desc;
 -- 3. How does 30-day readmission change by discharge month?
 select
     discharge_month,
-    discharged_admissions,
+    eligible_discharged_admissions,
     readmissions_within_30_days,
     readmission_rate_30d
 from {{ ref('mart_readmissions_30d') }}
