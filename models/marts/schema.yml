@@ -1,0 +1,119 @@
+version: 2
+
+models:
+  - name: fct_appointments
+    description: Appointment fact. Grain is one row per appointment.
+    columns:
+      - name: appointment_id
+        tests: [not_null, unique]
+      - name: appointment_status
+        tests:
+          - accepted_values:
+              values: ['COMPLETED', 'NO_SHOW', 'CANCELLED']
+
+  - name: fct_encounters
+    description: Encounter fact. Grain is one row per encounter.
+    columns:
+      - name: encounter_id
+        tests: [not_null, unique]
+      - name: wait_time_minutes
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: consultation_minutes
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              inclusive: true
+
+  - name: fct_admissions
+    description: Admission fact with length of stay and 30-day readmission flag.
+    columns:
+      - name: admission_id
+        tests: [not_null, unique]
+      - name: length_of_stay_hours
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+
+  - name: dim_patients
+    description: Non-clinical patient dimension.
+    columns:
+      - name: patient_id
+        tests: [not_null, unique]
+
+  - name: dim_clinicians
+    description: Clinician dimension.
+    columns:
+      - name: clinician_id
+        tests: [not_null, unique]
+
+  - name: dim_facilities
+    description: Facility dimension.
+    columns:
+      - name: facility_id
+        tests: [not_null, unique]
+
+  - name: mart_daily_care_kpis
+    description: Daily appointment, encounter and waiting-time KPIs.
+    columns:
+      - name: reporting_date
+        tests: [not_null, unique]
+      - name: no_show_rate
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              inclusive: true
+
+  - name: mart_monthly_patient_engagement
+    description: Monthly patient activity and return rate.
+    columns:
+      - name: activity_month
+        tests: [not_null, unique]
+      - name: monthly_return_rate
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              inclusive: true
+
+  - name: mart_readmissions_30d
+    description: Monthly operational 30-day readmission summary.
+    columns:
+      - name: discharge_month
+        tests: [not_null, unique]
+      - name: readmission_rate_30d
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              inclusive: true
+
+  - name: mart_department_performance
+    description: Department-level monthly volume and wait-time metrics.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - activity_month
+            - facility_id
+            - department
+
+  - name: mart_bed_occupancy_daily
+    description: Daily facility bed occupancy estimate.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - occupancy_date
+            - facility_id
+    columns:
+      - name: bed_occupancy_rate
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              inclusive: true
