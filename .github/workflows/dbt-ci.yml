@@ -1,0 +1,89 @@
+name: dbt CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sql-policy-check:
+    name: SQL policy checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Reject SELECT star in models and tests
+        shell: bash
+        run: |
+          # Transformation and test SQL must explicitly name required columns.
+          if grep -RniE 'select[[:space:]]+\*' models tests --include='*.sql'; then
+            echo 'SELECT * found in a model or test.'
+            exit 1
+          fi
+          echo 'No SELECT * usage found in models or tests.'
+
+  dbt-build:
+    name: dbt build and tests
+    runs-on: ubuntu-latest
+    env:
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GCP_SERVICE_ACCOUNT_JSON: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      - name: Generate synthetic source files
+        run: python scripts/generate_sample_data.py
+
+      - name: Explain credential requirement when secrets are missing
+        if: ${{ env.GCP_PROJECT_ID == '' || env.GCP_SERVICE_ACCOUNT_JSON == '' }}
+        run: |
+          echo 'BigQuery build skipped because repository secrets are not configured.'
+          echo 'Required: GCP_PROJECT_ID and GCP_SERVICE_ACCOUNT_JSON.'
+
+      - name: Create temporary BigQuery key
+        if: ${{ env.GCP_PROJECT_ID != '' && env.GCP_SERVICE_ACCOUNT_JSON != '' }}
+        shell: bash
+        run: printf '%s' "$GCP_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/gcp-key.json"
+
+      - name: Create CI dbt profile
+        if: ${{ env.GCP_PROJECT_ID != '' && env.GCP_SERVICE_ACCOUNT_JSON != '' }}
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/dbt-ci"
+          cat > "$RUNNER_TEMP/dbt-ci/profiles.yml" <<EOF
+          careflow_health_analytics:
+            target: ci
+            outputs:
+              ci:
+                type: bigquery
+                method: service-account
+                project: ${GCP_PROJECT_ID}
+                dataset: careflow_ci
+                keyfile: ${RUNNER_TEMP}/gcp-key.json
+                threads: 4
+                timeout_seconds: 300
+                location: US
+          EOF
+
+      - name: Load synthetic seed data
+        if: ${{ env.GCP_PROJECT_ID != '' && env.GCP_SERVICE_ACCOUNT_JSON != '' }}
+        run: dbt seed --full-refresh --profiles-dir "$RUNNER_TEMP/dbt-ci"
+
+      - name: Run dbt build
+        if: ${{ env.GCP_PROJECT_ID != '' && env.GCP_SERVICE_ACCOUNT_JSON != '' }}
+        run: dbt build --profiles-dir "$RUNNER_TEMP/dbt-ci"
