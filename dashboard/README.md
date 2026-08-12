@@ -4,16 +4,16 @@ The dashboard uses the reporting marts rather than raw healthcare events.
 
 ## Main KPI cards
 
-1. **Daily Active Patients** — distinct patients with an encounter on a day.
-2. **Monthly Active Patients** — distinct patients with an encounter in a month.
-3. **Appointment No-show Rate** — no-show appointments divided by all booked appointments.
-4. **Average Wait Time** — average minutes from arrival to consultation start.
-5. **Median Wait Time** — median minutes from arrival to consultation start.
-6. **Average Consultation Time** — average minutes from consultation start to end.
-7. **Average Length of Stay** — average inpatient stay duration in days.
-8. **30-Day Readmission Rate** — eligible discharged admissions followed by another admission within 30 days, divided by discharged admissions with a complete 30-day follow-up window.
-9. **Bed Occupancy Rate** — occupied beds divided by licensed beds.
-10. **Monthly Patient Return Rate** — patients active in both the current and previous month divided by previous-month active patients.
+1. **Daily Active Patients:** distinct patients with an encounter on a day.
+2. **Monthly Active Patients:** distinct patients with an encounter in a month.
+3. **Appointment No-show Rate:** no-show appointments divided by all booked appointments.
+4. **Average Wait Time:** average minutes from arrival to consultation start.
+5. **Median Wait Time:** median minutes from arrival to consultation start.
+6. **Average Consultation Time:** average minutes from consultation start to end.
+7. **Average Length of Stay:** average inpatient stay duration in days.
+8. **30-Day Readmission Rate:** eligible discharged admissions followed by another admission within 30 days, divided by discharged admissions with a complete 30-day follow-up window.
+9. **Bed Occupancy Rate:** occupied beds divided by licensed beds.
+10. **Monthly Patient Return Rate:** patients active in both the current and previous month divided by previous-month active patients.
 
 ## Recommended visuals
 
