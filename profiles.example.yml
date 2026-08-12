@@ -1,0 +1,11 @@
+careflow_health_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: YOUR_GCP_PROJECT_ID
+      dataset: careflow
+      threads: 4
+      timeout_seconds: 300
+      location: US
