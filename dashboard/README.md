@@ -11,7 +11,7 @@ The dashboard uses the reporting marts rather than raw healthcare events.
 5. **Median Wait Time** — median minutes from arrival to consultation start.
 6. **Average Consultation Time** — average minutes from consultation start to end.
 7. **Average Length of Stay** — average inpatient stay duration in days.
-8. **30-Day Readmission Rate** — discharged admissions followed by another admission within 30 days, divided by discharged admissions.
+8. **30-Day Readmission Rate** — eligible discharged admissions followed by another admission within 30 days, divided by discharged admissions with a complete 30-day follow-up window.
 9. **Bed Occupancy Rate** — occupied beds divided by licensed beds.
 10. **Monthly Patient Return Rate** — patients active in both the current and previous month divided by previous-month active patients.
 
@@ -50,7 +50,7 @@ The deterministic dataset used for the project contains:
 - **13.16% appointment no-show rate**
 - **44.15 minutes average wait time**
 - **4.83 days average length of stay**
-- **20.39% synthetic 30-day readmission rate**
+- **22.18% synthetic 30-day readmission rate** among discharges with a complete 30-day observation window
 
 Monthly active patients range from **199 to 225** across January to June 2026.
 
