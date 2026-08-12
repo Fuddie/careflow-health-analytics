@@ -21,10 +21,10 @@ It supports questions such as:
 
 ## Technology
 
-- **dbt** — transformations, tests and documentation
-- **Google BigQuery** — warehouse design and SQL
-- **Python** — deterministic synthetic data generation
-- **dbt_utils** — range and composite-grain tests
+- **dbt**: transformations, tests and documentation
+- **Google BigQuery**: warehouse design and SQL
+- **Python**: deterministic synthetic data generation
+- **dbt_utils**: range and composite-grain tests
 
 ## Model structure
 
