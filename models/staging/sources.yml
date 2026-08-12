@@ -1,0 +1,51 @@
+version: 2
+
+# Raw tables are generated from synthetic dbt seeds. In production these would
+# normally be populated by operational systems or an ingestion service.
+sources:
+  - name: careflow_raw
+    description: Synthetic raw healthcare operations tables.
+    schema: "{{ target.schema }}_raw"
+
+    tables:
+      - name: raw_patients
+        description: Patient master records.
+        columns:
+          - name: patient_id
+            tests: [not_null, unique]
+
+      - name: raw_facilities
+        description: Facility master records.
+        columns:
+          - name: facility_id
+            tests: [not_null, unique]
+
+      - name: raw_clinicians
+        description: Clinician roster records.
+        columns:
+          - name: clinician_id
+            tests: [not_null, unique]
+
+      - name: raw_appointments
+        description: Appointment booking and attendance events.
+        columns:
+          - name: appointment_id
+            tests: [not_null, unique]
+          - name: patient_id
+            tests: [not_null]
+          - name: scheduled_at
+            tests: [not_null]
+
+      - name: raw_encounters
+        description: Completed patient encounter events.
+        columns:
+          - name: encounter_id
+            tests: [not_null, unique]
+
+      - name: raw_admissions
+        description: Inpatient admission and discharge events.
+        columns:
+          - name: admission_id
+            tests: [not_null, unique]
+          - name: admitted_at
+            tests: [not_null]
