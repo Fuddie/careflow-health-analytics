@@ -2,7 +2,7 @@
 
 CareFlow is a personal analytics engineering project for a fictional healthcare provider. It uses synthetic appointment, encounter, admission, clinician, facility and patient data to build tested reporting models with **dbt, BigQuery SQL and Python**.
 
-All data in this repository is synthetic. No real patient, hospital or employer data is used.
+The repository uses synthetic data only and contains no real patient, hospital or employer data.
 
 ## Project scope
 
